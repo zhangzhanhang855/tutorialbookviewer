@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的文档中心</title>
+    <style>
+        :root {
+            --primary-color: #24292e; /* GitHub 深灰色 */
+            --accent-color: #0366d6;
+            --bg-color: #f6f8fa;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; margin: 0; background-color: var(--bg-color); display: flex; flex-direction: column; height: 100vh; }
+        
+        /* 顶部导航 */
+        header { background: var(--primary-color); color: white; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        
+        /* 槽位选择区 */
+        .slot-container { padding: 10px 20px; background: white; border-bottom: 1px solid #e1e4e8; display: flex; gap: 10px; flex-wrap: wrap; }
+        .slot-btn { padding: 8px 16px; border: 1px solid #d1d5da; background: white; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500; }
+        .slot-btn:hover { background: #f3f4f6; border-color: var(--accent-color); color: var(--accent-color); }
+        .slot-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+
+        /* 内容展示区 */
+        #viewer-frame { flex-grow: 1; width: 100%; border: none; }
+        .welcome-msg { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #586069; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="font-size: 18px; font-weight: bold;">📚 文档库浏览器</div>
+</header>
+
+<div class="slot-container" id="slot-list">
+    </div>
+
+<div id="content-area" class="welcome-msg">
+    <p>请点击上方槽位查看 PDF 文档</p>
+</div>
+
+<script>
+    /**
+     * --- 配置区域：在此处输入你的 5 个槽位信息 ---
+     * name: 按钮上显示的文字
+     * url:  GitHub 的 Raw 链接 (例如: https://raw.githubusercontent.com/user/repo/main/file.pdf)
+     */
+    const pdfData = [
+        { name: "项目说明文档", url: "https://example.com/file1.pdf" },
+        { name: "技术架构图解", url: "https://example.com/file2.pdf" },
+        { name: "2024季度报告", url: "https://example.com/file3.pdf" },
+        { name: "API接口参考", url: "https://example.com/file4.pdf" },
+        { name: "部署指南手册", url: "https://example.com/file5.pdf" }
+    ];
+
+    const slotList = document.getElementById('slot-list');
+    const contentArea = document.getElementById('content-area');
+
+    // 渲染槽位按钮
+    pdfData.forEach((pdf, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'slot-btn';
+        btn.textContent = `${index + 1}. ${pdf.name}`;
+        btn.onclick = () => loadPdf(pdf.url, btn);
+        slotList.appendChild(btn);
+    });
+
+    function loadPdf(url, activeBtn) {
+        // 更新按钮高亮状态
+        document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
+        activeBtn.classList.add('active');
+
+        // 加载 PDF
+        // 如果浏览器直接预览有问题，可尝试在 URL 前加上：https://mozilla.github.io/pdf.js/web/viewer.html?file=
+        contentArea.innerHTML = `<iframe id="viewer-frame" src="${url}"></iframe>`;
+    }
+</script>
+
+</body>
+</html>
